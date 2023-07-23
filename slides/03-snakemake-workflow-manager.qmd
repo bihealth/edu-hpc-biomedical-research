@@ -56,7 +56,169 @@ __Actions__
 
 ## Reproducibility in Computational Sciences {.inverse background-color="#70ADC1"}
 
+- Reproducibility in General
+- Bioinformatics Reproducibility Issues
+
+## Reproducibility in General
+
+- Definition
+- Reproducibility Crisis
+- Reproducibility vs. Generalizability
+
+## Bioinformatics Reproducibility Issues
+
+## Issue: Software (1)
+
+Your code with Git
+
+## Issue: Software (2)
+
+Other code
+
+- SBOM
+- conda
+- apptainer images
+
+## Issue: Parameters
+
+- Keep a record
+- Random numbers
+
+## Issue: Data
+
+- Keep it save
+    - file permissions
+    - backups
+- Keep integrity
+    - checksums
+- Keep rights
+    - ... of researcher
+    - ... of individual (if human)
+
+## Workflow Managers {.inverse background-color="#70ADC1"}
+
+- Introduction
+- Snakemake
+- Nextflow
+- Galaxy
+
+## Introduction
+
+- Definition / what it does
+- Tasks:
+    - orchestrate jobs
+    - keep logs
+    - continuability
+
+## Snakemake
+
+- Python-based
+- Similar to Unix Make
+- "Back to front" with dependencies
+- Explicit names, visible to the user
+
+## Nextflow
+
+- DSL based on groovy
+- data "hidden" from the user
+- front-to-back based on pipeline
+
+## Galaxy
+
+- graphical
+- central server
+- backing cluster
+- not at BIH
+
 ## The Snakemake Workflow Manager {.inverse background-color="#70ADC1"}
+
+- Introduction
+- Installation
+- Our First Workflow
+- A Real Workflow
+
+## Introduction
+
+## Installation
+
+## Our First Workflow (1)
+
+- no parameters
+
+## Our First Workflow (2)
+
+- with parameters
+
+## Our First Workflow (3)
+
+- read parameters from sample sheet
+
+## A Real Workflow (1)
+
+the first version
+
+## A Real Workflow (2)
+
+resource specification
+
+## A Real Workflow (3)
+
+config files
+
+## A Real Workflow (4)
+
+resource specification
+
+## A Real Workflow (5)
+
+temporary files
+
+## A Real Workflow (6)
+
+logging
+
+## A Real Workflow (7)
+
+- wildcard constraints
+- temporary files
+
+## A Real Workflow (8)
+
+- Using conda
+
+## A Real Workflow (9)
+
+- Using Singularity
+
+## Using the Slurm Runner (1)
+
+how does the integration work?
+
+## Using the Slurm Runner (2)
+
+running it
+
+## Using the Slurm Runner (3)
+
+looking at logs etc
+
+## Tricks (1)
+
+- tmpdir
+
+## Tricks (2)
+
+- "online help"
+
+## Tricks (3)
+
+- rerun with increasing resources
+
+## Tricks (4)
+
+- input functions, unpack
+
+## Tricks (5)
 
 ## Bring Your Own Project {.inverse background-color="#70ADC1"}
 

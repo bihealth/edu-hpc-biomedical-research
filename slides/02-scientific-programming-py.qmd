@@ -46,20 +46,265 @@ __Aims__
 
 __Considered Applications__
 
-stable/)
 - "Data ~~science~~ wrangling" with [polars](https://www.pola.rs/)
 - Fast numerical computations with SciPy/Numpy
 - Interfacing with R for Statistics
 - Machine learning with [scikit-learn](https://scikit-learn.org/)
 - Deep Learning with Tensorflow
 
+## Juptyer Notebooks {.inverse background-color="#70ADC1"}
+
+- Introduction
+- Installation and Usage
+
+## Introduction
+
+- What is it
+- Is it useful?
+
+## Installation
+
+```bash
+
+```
+
+## Using Juptyer Notebook
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+some points
+
+:::
+
+::: {.column width="50%"}
+
+screenshot
+
+:::
+
+::::
+
+## Using Jupyter Labs
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+some points
+
+:::
+
+::: {.column width="50%"}
+
+screenshot
+
+:::
+
+::::
+
 ## Data Wrangling with Polars {.inverse background-color="#70ADC1"}
 
-## Numerical Comuptation with SciPy/Numpy {.inverse background-color="#70ADC1"}
+- Introduction
+- Loading and Writing Data
+- "Tidy Data" with Polars
+- Data Visualization
+
+## Introduction
+
+- Polars features
+- Polars vs pandas
+
+## Loading and Writing Data (1)
+
+Loading Data
+
+## Loading and Writing Data (2)
+
+Writing Data
+
+## Tidy Data with Polars (1)
+
+What is tidy data?
+
+R tidyverse
+
+## Tidy Data with Polars (2)
+
+tidypolars
+
+## Data Visualization (1)
+
+Plotly Express
+
+## Data Visualization (2)
+
+Vega
+
+## Data Visualization (3)
+
+Bokeh
+
+## Data Visualization (4)
+
+**It's quite intimidating. How to get started.**
+
+- Use the galleries/examples!
+- [Plotly Express Examples](https://plotly.com/python/plotly-express/)
+- [Vega Lite Gallery](https://vega.github.io/vega-lite/examples/)
+- [Bokeh Gallery](https://docs.bokeh.org/en/latest/docs/gallery.html)
+
+## Conversion Between Polars and Pandas (1)
+
+- why
+- install dependencies
+
+## Conversion Between Polars and Pandas (2)
+
+- example code & explanation
+
+## Conversion Between Polars and Pandas (3)
+
+- example code & explanation
+
+## Numerical Computation with SciPy/NumPy {.inverse background-color="#70ADC1"}
+
+- Introduction
+- Input and Output
+- Arrays and Shapes
+- Vectorized Operations
+
+## Introduction to SciPy/NumPy
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+**NumPy**
+
+- Numerical computing data structures
+    - high-performance vectors/matrices
+- Numerical computing algorithms
+    - vectorized operations, random numbers ...
+    - linear algebra
+
+:::
+
+::: {.column width="50%"}
+
+**SciPy**
+
+- Fundamental scientific algorithms
+    - clustering
+    - interpolation / smoothing
+    - statistics
+    - sparse matrices
+    - image and signal processing
+    - FFT, integration
+
+:::
+
+::::
+
+👉 Mostly low level characteristics, many other libraries build on top.
+
+## Input and Output
+
+- numph array files
+- compression
+- more than one array
+
+## Arrays and Shapes
+
+- vectors
+- matrices
+- data types
+
+## Vectorized Operations (1)
+
+Example
+
+## Vectorized Operations (2)
+
+Benchmark vs. Python List
 
 ## Interfacing with R for Statistics {.inverse background-color="#70ADC1"}
 
+- Introduction
+- Low-Level Approaches
+- Using `rpy2`
+
+## Introduction
+
+- why?
+- how?
+
+## Low-Level Approaches
+
+- via disk
+- call R scripts from Python
+
+## Using `rpy2` (1)
+
+data transfer vs pandas and data frames
+
+## Using `rpy2` (2)
+
+Some examples:
+
+- Student's t-test
+- Kolmogorov-Smirnov test
+- Fisher test
+
+## Using `rpy2` (3)
+
+- Data frame operations
+
+## Using `rpy2` (4)
+
+- dplyr & tidyr
+
+## Using `rpy2` (5)
+
+- ggplot2
+
+## Using `rpy2` (6)
+
+- RMagics
+
 ## Machine Learning `scikit-learn` {.inverse background-color="#70ADC1"}
+
+- Introduction
+- Estimator Cheat Sheet
+- Example: Clustering
+- Example: Regression
+- Example: Classification
+
+## Introduction
+
+## Estimator Cheat Sheet
+
+## Example: Clustering
+
+## Example: Regression
+
+## Example: Classification
+
+- Introduction
+- Installation
+- "TensorFlow 2 Quickstart for Beginners"
+- Running on the HPC
+
+## Introduction
+
+## Installation
+
+## "TensorFlow 2 Quickstart for Beginners"
+
+https://www.tensorflow.org/tutorials/quickstart/beginner
+
+## Running on the HPC
 
 ## Deep Learning with Tensorflow {.inverse background-color="#70ADC1"}
 

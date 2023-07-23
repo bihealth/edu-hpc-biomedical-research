@@ -716,11 +716,49 @@ dependencies:
 - Building `.sif` files from Docker containers
 - Building `.sif` files from scratch
 
+## What is Apptainer?
+
+[Apptainer]{.fragment .highlight-red} (fka Singularity) is a [container system]{.fragment .highlight-red} for [HPC]{.fragment .highlight-red}.
+
+[**What are containers?**]{.fragment .highlight-red}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+- Package all software dependencies into one image file.
+- Run the software inside of the image.
+- [Bind-mount]{.fragment .highlight-red} directories into the container.
+
+:::
+
+::: {.column width="50%"}
+
+```{mermaid}
+flowchart TD
+    A[OS User Land] --> B[OS Kernel]
+    C[Apptainer Layer] --> B
+    D[Your app] --> A
+    E[Your Container] --> C
+```
+
+:::
+
+::::
+
+➡️ Reproducible, transferrable, application installations
+
 ## Running `.sif` Image Files
+
+- TODO
 
 ## Converting Docker Image to `.sif` Files
 
+- TODO
+
 ## Building `.sif` Images from Scratch
+
+- TODO
 
 ## Bring Your Own Project {.inverse background-color="#70ADC1"}
 

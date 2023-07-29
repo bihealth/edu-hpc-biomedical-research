@@ -162,7 +162,6 @@ There is no free lunch!
 
 ::::
 
-:::::
 
 ## What is Your Take? 🤸
 
@@ -334,7 +333,35 @@ __"Blitzlicht" 📸__
 
 ::::
 
-## Distributed File Systems (1)
+## (Distributed) File Systems
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+- directory/files correspond to **inode**
+    - inode: **fixed-size** data store
+- special inodes such as root directory
+    - "it's all inodes from there"
+- large directories:
+    - indirection
+    - OS must scan all indirect blocks for an `ls`
+
+- More? [Ext4 Disk Layout](https://ext4.wiki.kernel.org/index.php/Ext4_Disk_Layout)
+
+:::
+
+::: {.column width="50%"}
+
+![](img/00-outline/inode-structure-wikipedia.svg){width="100%"}
+
+[Source: Wikipedia](https://commons.wikimedia.org/wiki/File:Ext2-inode.svg)
+
+:::
+
+::::
+
+## Distributed File Systems (2)
 
 __"Same-same (as your laptop), but different."__
 
@@ -347,7 +374,7 @@ __"Same-same (as your laptop), but different."__
   - files can be opened by multiple processes
 - ... harder to enforce in a distributed (multi-node) setting
 
-## Distributed File Systems (2)
+## Distributed File Systems (3)
 
 **Best Practices / Do's & Don'ts**
 
@@ -359,7 +386,7 @@ __"Same-same (as your laptop), but different."__
 - avoid recursive traversal of large structures
   - `ls -lR` will be slow!
 
-## Distributed File Systems (3)
+## Distributed File Systems (4)
 
 **Best Practices / Do's & Don'ts**
 
@@ -371,6 +398,14 @@ __"Same-same (as your laptop), but different."__
 - **DO** use Unix `sort`
 - **DO** use Unix pipelines rather than temporary files
   - e.g., `seqtk mergepe R1.fq R2.fq | bwa mem ref.fa | samtools sort | samtools view -O out.bam`
+
+## Distributed File Systems (6)
+
+**Best Practices / Do's & Don'ts**
+
+- **DON'T** be afraid of large files
+    - 100GB does not qualify as large
+    - 1TB files ... do
 
 ## Job Scheduler and Resource Management
 
@@ -419,7 +454,21 @@ __Recap__
 - a first peek at job schedulers
 - further sessions
 
-## Bonus Content / Lab Tasks
+## What's next?{.even-smaller}
+
+Course description: *"where participants can apply their learnings in the context of their PhD projects"*
+
+How this applies to this session:
+
+- We ensure that your HPC access works
+- We will review your current settings (one on one)
+- Let's discuss productivity:
+    - places (online) to find documentation / get answers
+    - "sleight of hand" ♥️♠️♣️♦️
+    - text editors
+    - Bash features: shortcuts, history, ...
+
+## Lab Tasks
 
 Please spend the rest of the day setting up or learning about ...
 

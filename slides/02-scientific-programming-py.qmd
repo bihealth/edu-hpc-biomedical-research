@@ -52,7 +52,7 @@ __Considered Applications__
 - Machine learning with [scikit-learn](https://scikit-learn.org/)
 - Deep Learning with Tensorflow
 
-## Juptyer Notebooks {.inverse background-color="#70ADC1"}
+## Jupyter Notebooks {.inverse background-color="#70ADC1"}
 
 - Introduction
 - Installation and Usage
@@ -68,7 +68,7 @@ __Considered Applications__
 
 ```
 
-## Using Juptyer Notebook
+## Using Jupyter Notebook
 
 :::: {.columns}
 
@@ -211,7 +211,7 @@ Bokeh
 
 ## Input and Output
 
-- numph array files
+- numpy array files
 - compression
 - more than one array
 

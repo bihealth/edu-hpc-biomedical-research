@@ -432,15 +432,32 @@ Use online resources to figure out the right command line parameters.
 
 Use the following commands and use the online help and `man $command` to figure out the output:
 
+:::: {.columns}
+
+::: {.column width=50%}
+
 - `sdiag`
 - `squeue`
 - `sinfo`
+
+:::
+
+::: {.column width=50%}
+
 - `scontrol show node NODE`
 - `sprio -l -S -y`
+
+:::
+
+::::
 
 ## Your Turn: 👓 Staring at the Scheduler 🤸
 
 Use the following commands and use the online help and `man $command` to figure out the output:
+
+:::: {.columns}
+
+::: {.column width=50%}
 
 - `sdiag`
     - quick look to see scheduler status and load
@@ -448,10 +465,19 @@ Use the following commands and use the online help and `man $command` to figure 
     - investigate current queue status
 - `sinfo`
     - get an overview of nodes' health and load
+
+:::
+
+::: {.column width=50%}
+
 - `scontrol show node NODE`
     - look at node health and load
 - `sprio -l -S -y`
     - look at current scheduler priorities for jobs
+
+:::
+
+::::
 
 ## Your Turn: Make it Fail! 🤸
 
@@ -466,24 +492,60 @@ Provoke the following situations:
 
 In each case, look at `scontrol`/`sacct` output and look at log files.
 
-## Slurm Partitions
+## Slurm Partitions (1)
 
-- TODO: explain in general
-- TODO: explain on HPC cluster
+- The nodes in the cluster are assigned to **partitions**.
+- Partitions are used to
+    - separate nodes with special hardware (high memory, GPU)
+    - provide access to different quality of service
+- By default, all jobs go to `standard`
+    - they will then be routed to the appropriate partition based on their resource requirements
+    - you can override this with `--partition=PARTITION` on the command line
+- You must specify the the following partitions explicitely: `highmem`, `gpu`, `mpi`
+
+## Slurm Partitions (2) {.even-smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+Available by default:
+
+- `debug` - very short jobs for debugging
+- `short` - allows many jobs up to 4h
+- `medium` - up to 512 cores per user, up to 7days
+- `long` - up to 64 cores per user, up to 14 days
+
+:::
+
+::: {.column width=50%}
+
+Request access by email to helpdesk
+
+- `highmem` - for high memory node access
+- `gpu` - for GPU node access
+- `mpi` - for running MPI jobs
+- `critical` - for running many jobs for clinical/mission-critical jobs
+
+:::
+
+::::
 
 ## Tuning `squeue` Output
 
-TODO
+- You can tune the output of many Slurm programs
+- For example `squeue -o/--format`.
+- See `man squeue` for details.
 
-e.g.,
+- Example:
 
-```
-squeue -o "%.10i %9P %60j %10u %.2t %.10M %.6D %.4C %20R %b" "$@"
-```
+    ```
+    $ squeue -o "%.10i %9P %60j %10u %.2t %.10M %.6D %.4C %20R %b" --user=holtgrem_c
+        JOBID PARTITION NAME                                                         USER       ST       TIME  NODES CPUS NODELIST(REASON)     TRES_PER_NODE
+      15382564 medium    bash                                                         holtgrem_c  R      30:25      1    1 hpc-cpu-63           N/A
+    ```
 
-use `-u $USER`
-
-use `|less -S`
+- Another goodie: pipe into `less -S` to get a horizontally scrollable output
 
 Your turn 🤸: look at `man squeue` and find your "top 3 most useful" values.
 
@@ -498,13 +560,29 @@ alias sqme='sq -u holtgrem_c "$@"'
 alias sqmel='sqme "$@" | less -S'
 ```
 
-## The Role of Logging
+## The Role of Logging (1)
 
-- TODO: troubleshooting
-- TODO: post mortem analysis
-- TODO: explain `set -x` and `set -v`
-- TODO: explain about flushing to disk etc.
-- TODO: [stdbuf](https://stackoverflow.com/questions/1429951/force-flushing-of-output-to-a-file-while-bash-script-is-still-running)
+- Main use case: ⚡⚡ **troubleshooting** ⚡⚡
+- While running
+    - is my job stuck?
+    - is something weird going on?
+- Post mortem analysis
+    - why did my job fail?
+    - what did it do?
+
+## The Role of Logging (2)
+
+In Bash scripts, `set -x` and `set -v` are heaven-sent.
+
+- `set -x` prints commands before execution 
+- (`set -v` prints commands as they are read)
+
+## Logging Pitfalls
+
+- Log files are written to disk and they are not flushed manually
+    - You may thus not see the last lines of your log file!
+- If this is a problem, try using [stdbuf](https://stackoverflow.com/questions/1429951/force-flushing-of-output-to-a-file-while-bash-script-is-still-running) in your script and manually redirect to a log file
+    - But you probably should not do this by default!
 
 ## Job Script Temporary File Handling
 
@@ -523,72 +601,105 @@ trap "rm -rf $TMPDIR" ERR EXIT
 
 ## Submitting GPU Jobs
 
-- TODO: describe how to allocate 1 GPU
-- TODO: describe need to setup software
-- TODO: show how this looks like and tell ppl. about limited GPU availability
+```
+hpc-login-1$ export | grep CUDA_VISIBLE_DEVICES
+hpc-login-1$ srun --partition=gpu --gres=gpu:tesla:1 --pty bash
+hpc-gpu-1:~$ export | grep CUDA_VISIBLE_DEVICES
+declare -x CUDA_VISIBLE_DEVICES="0"
+hpc-gpu-1:~$ exit
+res-login-1:~$ srun --partition=gpu --gres=gpu:tesla:2 --pty bash
+hpc-gpu-2:~$ export | grep CUDA_VISIBLE_DEVICES
+declare -x CUDA_VISIBLE_DEVICES="0,1"
+```
 
 👉 [hpc-docs: How-To: Connect to GPU Nodes](https://hpc-docs.cubi.bihealth.org/how-to/connect/gpu-nodes/)
 
-## Submitting High Memory Jobs
+## Submitting High Memory Jobs (1)
 
-- TODO: describe use/risk
-- TODO: describe need to keep memory low
-- TODO: describe possibility of CPU overcommittment but not RAM overcommittment
+- The HPC has two nodes with 0.5TB and 1TB of RAM each.
+- To use these nodes, add `--partition=highmem` to `sbatch`/`srun` command line.
+- However:
+    - Request access first by email to hpc-helpdesk@bih-charite.de
+    - There are only four such nodes!
+
+## Submitting High Memory Jobs (2)
+
+- Can you reduce memory usage?
+    - Split your problem into smaller ones?
+    - Use more memory efficient data structures / algorithms?
+    - E.g., Unix `sort` allows for external memory (aka disk) sorting and makes for super memory efficient sorting
+    - Similarly, `samtools sort` allows fine-grained control over memory usage
 
 ## Canceling Jobs with `scancel`
 
-- TODO: explain
-- TODO: explain people how to write loops with `squeue`
+- Jobs that are in running or pending state can be **cancelled**
+- For this: `scancel JOBID`
+- Cancel all your jobs: `scancel --user=$USER`
+- See `scancel --help` for more options
 
 Your turn 🤸: submit a job, cancel it, look at `scontrol` and `sacct` output.
 
-## QOS and `sacctmgr`
+## QOS and `sacctmgr` (1)
 
-TODO: explain
+- QOS = quality of service
+- Each partition has a QOS (with the same name) attached to it
+- This allows to restrict maximum wall time `MaxWall` ...
+- ... and the maximum tracked resource per user `MaxTRESPU`
+- To see these values:
 
 ```
-holtgrem_c@hpc-login-1$ sacctmgr show qos -p | cut -d '|' -f 1,19,20 | column -s '|' -t
+$ sacctmgr show qos -p | cut -d '|' -f 1,19,20 | column -s '|' -t
 Name             MaxWall      MaxTRESPU
 normal                        cpu=512,mem=3.50T
 debug            01:00:00     cpu=1000,mem=7000G
 medium           7-00:00:00   cpu=512,mem=3.50T
 critical                      cpu=12000,mem=84000G
 long             14-00:00:00  cpu=64,mem=448G
-highmem
-gpu-interactive  01:00:00
-short            04:00:00     cpu=2000,mem=14000G
-gpu              7-00:00:00
-staging          14-00:00:00  cpu=4000,mem=28000G
+...
 ```
 
 ## Job Dependencies with `sbatch`
 
-- TODO: explain
-- TODO: explain use case to repeat things ;-)
+- Each Slurm job correspond to a tasks in **task-based parallelism**
+- We can model dependencies betwen jobs:
+    - `sbatch -d afterok:JOBID:JOBID:JOBID:...`
+    - `sbatch -d afterany:JOBID:...`
+    - `sbatch --job-name NAME -d singleton`
+- More options / information: `man sbatch`
 
 Your turn 🤸: write two jobs with `-d afterok:JOBID`
 
 ## X11 Forwarding with Slurm
 
-- TODO: explain need
-- TODO: explain prerequites
-- TODO: show
+- Sometimes you need to run a graphical application on the compute nodes
+- You **must** run a local X11 server (e.g., Linux, MobaXTerm)
+- Then, you can do:
+
+    ```
+    $ ssh -X hpc-login-1
+    hpc-login-1$ srun --x11 --pty bash -i
+    hpc-cpu-141$ xterm
+    ```
+
+- ... and see an XTerm window locally
 
 Your turn 🤸: start `xterm` if you have an local X11 server.
 
 ## Reservations
 
-- TODO: explain meaning
-- TODO: show example of training reservation
+- Reservations allow administrators to reserve resources for specific users.
+- For example, we have a reservation for this course:
 
-```
-holtgrem_c@hpc-login-1$ scontrol show reservation
-ReservationName=svc-bih-cubi-demux_c_6 StartTime=2022-08-26T12:54:31 EndTime=2023-08-26T12:54:31 Duration=365-00:00:00
-   Nodes=hpc-cpu-207 NodeCnt=1 CoreCnt=16 Features=(null) PartitionName=(null) Flags=SPEC_NODES
-   TRES=cpu=32
-   Users=svc-bih-cubi-demux_c Groups=(null) Accounts=(null) Licenses=(null) State=ACTIVE BurstBuffer=(null) Watts=n/a
-   MaxStartDelay=(null)
-```
+    ```
+    $ scontrol show reservation hpc-course
+    ReservationName=hpc-course StartTime=2023-08-27T00:00:00 EndTime=2023-09-02T00:00:00 Duration=6-00:00:00
+      Nodes=hpc-cpu-[76,80,191-194,201-206,208-228],hpc-gpu-[6-7] NodeCnt=35 CoreCnt=592 Features=(null) PartitionName=(null) Flags=IGNORE_JOBS,SPEC_NODES
+      TRES=cpu=1184
+      Users=holtgrem_c Groups=(null) Accounts=(null) Licenses=(null) State=INACTIVE BurstBuffer=(null) Watts=n/a
+      MaxStartDelay=(null)
+  ```
+
+- To use this reservation, add `--reservation=hpc-course` to your `sbatch`/`srun` command line.
 
 ## Conda {.inverse background-color="#70ADC1"}
 
@@ -596,7 +707,7 @@ ReservationName=svc-bih-cubi-demux_c_6 StartTime=2022-08-26T12:54:31 EndTime=202
 - Installation
 - Managing environments and instaling software
 
-## Software Installation
+## Software Installation {.even-smaller}
 
 :::: {.columns}
 
@@ -613,16 +724,15 @@ Some options:
   - [More old school pain]{.fragment}
 - [Guix](https://guix.gnu.org/)
   - [🤓 too nerdy(?)]{.fragment}
-- [🐍 Conda](https://docs.conda.io/en/latest/)
-  - [bioconda channel]{.fragment} [👉 bioconda Homepage](http://bioconda.github.io/){.fragment}
-  - [Snakemake support (more of this later)]{.fragment}
-
 :::
 
 ::: {.column width="40%"}
 
-![](img/01-slurm/installer-example.png)
+![](img/01-slurm/installer-example.png){width=70%}
 
+- [🐍 Conda](https://docs.conda.io/en/latest/)
+  - [bioconda channel]{.fragment} [👉 bioconda Homepage](http://bioconda.github.io/){.fragment}
+  - [Snakemake support (more of this later)]{.fragment}
 :::
 
 ::::
@@ -705,9 +815,17 @@ dependencies:
 
 ```
 
-## Second Steps: Create New Environment
-
 ## Second Steps: Installing Software
+
+```{.bash}
+mamba search samtools
+...
+```
+
+```{.bash}
+mamba install -y samtools
+...
+```
 
 ## Apptainer {.inverse background-color="#70ADC1"}
 
@@ -748,23 +866,151 @@ flowchart TD
 
 ➡️ Reproducible, transferrable, application installations
 
-## Running `.sif` Image Files
+## Preparations
 
-- TODO
+- Apptainer will download image files to `~/.apptainer`
+- We should move this to somewhere with more space than `$HOME`
+
+```
+$ mkdir -p ~/work/.apptainer
+$ ln -s ~/work/.apptainer ~/.apptainer
+$ ls -lh ~/work | grep apptainer
+lrwxrwxrwx  1 holtgrem_c hpc-ag-cubi   52 Apr 20 08:53 .apptainer -> /data/cephfs-1/home/users/holtgrem_c/work/.apptainer
+```
+
+## Running
+
+Before first run:
+
+```
+$ find ~/.apptainer/
+/data/cephfs-1/home/users/holtgrem_c/.apptainer/
+```
+
+Running (will download and convert Docker image)
+
+```
+$ apptainer run docker://grycap/cowsay Hello World
+INFO:    Converting OCI blobs to SIF format
+INFO:    Starting build...
+<<<many warnings>>>
+INFO:    Creating SIF file...
+ ___________________________
+< To order, call toll-free. >
+ ---------------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+```
+
+After run:
+
+```
+$ find ~/.apptainer/
+$HOME/.apptainer/
+...
+$HOME/.apptainer/cache/blob/blobs/sha256/bcc2a6e8c5a73d8b8a4d1a75e68946d7c404b2f32b7574f6e5e0d571bf3537c1
+...
+```
 
 ## Converting Docker Image to `.sif` Files
 
-- TODO
+Build it:
 
-## Building `.sif` Images from Scratch
+```
+$ apptainer build /tmp/cowsay.sif docker://grycap/cowsay
+# INFO:    Starting build...
+Getting image source signatures
+Copying blob d6e911d60d73 skipped: already exists  
+Copying blob 55010f332b04 skipped: already exists  
+Copying blob b6f892c0043b skipped: already exists  
+Copying blob 3deef3fcbd30 skipped: already exists  
+Copying blob cf9722e506aa skipped: already exists  
+Copying blob 2955fb827c94 skipped: already exists  
+Copying config c1634cdfc2 done  
+Writing manifest to image destination
+<<<many warnings>>>
+INFO:    Creating SIF file...
+INFO:    Build complete: /tmp/cowsay.sif
+```
 
-- TODO
+Run it:
+
+```
+$ apptainer run /tmp/cowsay.sif 
+ ______________________________________
+/ Lazlo's Chinese Relativity Axiom:    \
+|                                      |
+| No matter how great your triumphs or |
+| how tragic your defeats --           |
+|                                      |
+| approximately one billion Chinese    |
+\ couldn't care less.                  /
+ --------------------------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+```
+
+Cleanup:
+
+```
+$ rm -rf ~/.apptainer/*
+```
+
+## Building `.sif` Files from Scratch
+
+```
+$ cat lolcow.def
+Bootstrap: docker
+From: ubuntu:16.04
+
+%post
+    apt-get -y update
+    apt-get -y install fortune cowsay lolcat
+
+%environment
+    export LC_ALL=C
+    export PATH=/usr/games:$PATH
+
+%runscript
+    fortune | cowsay | lolcat
+```
+
+Then, build in two-step process (so we don't need `sudo`).
+
+```
+$ apptainer build --sandbox /tmp/lolcow lolcow.def
+$ apptainer build lolcow.sif /tmp/lolcow
+...
+$ apptainer run lolcow.sif
+ ________________________________________
+/ Your temporary financial embarrassment \
+| will be relieved in a surprising       |
+\ manner.                                /
+ ----------------------------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+```
+
+[More here](https://docs.sylabs.io/guides/3.0/user-guide/build_a_container.html)
 
 ## Bring Your Own Project {.inverse background-color="#70ADC1"}
 
 🫵 Where can you apply what you have learned in your PhD project?
 
 ## This is not the end...
+
+:::: {.columns}
+
+::: {.column width=50%}
 
 ... but all for this session
 
@@ -775,8 +1021,17 @@ __Recap__
   - Interactive and Batch Jobs
   - Query slurm for job and cluster status
   - Troubleshooting! 😱 🥸 🤓
+
+:::
+
+::: {.column width=50%}
+
 - Conda
   - Installation and managing environments
 - Apptainer
   - Introduction
   - Building and Running Images
+
+:::
+
+::::

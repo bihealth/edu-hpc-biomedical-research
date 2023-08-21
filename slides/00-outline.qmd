@@ -154,14 +154,11 @@ __Drawbacks__
 
 ::::
 
-::::
+:::::
 
 <hr>
 
 There is no free lunch!
-
-::::
-
 
 ## What is Your Take? 🤸
 
@@ -183,6 +180,209 @@ __From here on__
 
 - what do you hope to gain from using HPC?
 - what risks do you see?
+
+## Programming HPC Systems  {.inverse background-color="#70ADC1"}
+
+- There is no Magic or Silver Bullet
+- Common Paradigms for Parallel Programing
+
+⚠️ "Warning": just a quick and superficial overview ;-)
+
+## There Is No Magic (1)
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![](img/00-outline/wikipedia-cray-1.jpeg){width="100%"}
+
+Cray-1 1976 @80Mhz [Wikipedia](https://en.wikipedia.org/wiki/History_of_supercomputing#/media/File:Cray-1-deutsches-museum.jpg)
+
+:::
+
+::: {.column width="50%"}
+
+![](img/00-outline/wikipedia-blue-gene.jpeg){width="100%"}
+
+IBM Blue Gene ~2000-2015 [Wikipedia](https://en.wikipedia.org/wiki/History_of_supercomputing#/media/File:IBM_Blue_Gene_P_supercomputer.jpg)
+
+**"Just a (large) bunch of computers with fast interconnect."**
+
+:::
+
+::::
+
+## There Is No Magic (2)
+
+- From the perspective of 1976, your smartphone is a supercomputer.
+- iPhone 14
+    - ~1,000EUR
+    - 6 cores @3.23Ghz; 6GB RAM
+    - GPU: 5-core GPU
+    - "Neural Engine": 15.8TOPs
+- 2002 NEC Earth Simulator
+    - 412,000,000EUR (2023; inflation corrected)
+    - 36TFLOPs
+- 1976 Cray-1
+    - 24,623,570EUR (2023; inflation corrected)
+    - 160MFLOPS
+
+## There Is No Magic (3)
+
+- Is it easy to program an iPhone?
+    - "yes and no"
+- Is it easy to program for an HPC?
+    - "yes and no"
+
+## "Es gibt keinen Königsweg" (1)
+
+> aka. "There is no silver bullet".
+
+Steps to mastery:
+
+::: {.incremental}
+
+- Master using Linux.
+- Master programming for
+    - a single core
+    - multiple cores on a single machine
+    - multiple cores on multiple machines
+    - programming GPUs
+- Realize that most problems are
+
+:::
+
+## "Es gibt keinen Königsweg" (2)
+
+> aka. "There is no silver bullet".
+
+Steps to mastery:
+
+- Master using Linux.
+- Master programming for
+    - a single core
+    - multiple cores on a single machine
+    - ~~multiple cores on multiple machines~~
+    - programming GPUs
+- Realize that most problems
+    - are embarassingly parallel
+
+## "Es gibt keinen Königsweg" (3)
+
+> aka. "There is no silver bullet".
+
+Steps to mastery:
+
+- Master using Linux.
+- Master programming for
+    - a single core
+    - multiple cores on a single machine
+    - ~~multiple cores on multiple machines~~
+    - ~~programming GPUs~~
+- Realize that most problems
+    - are embarassingly parallel
+    - have well-solved "cores"
+
+## Types of Parallelism
+
+**Single-core level** (no focus here)
+
+- Bit-level parallelism
+    - aka bit-wise AND, OR, etc.
+- Instruction-level parallelism
+    - aka instruction pipelining
+
+**Programming level**
+
+- Pipeline parallelism
+- Task parallelism
+- Data parallelism
+
+## Pipeline Parallelism
+
+:::: {.columns}
+
+::: {.column width="50%"}
+![](img/00-outline/stanford-laundry-1.png)
+![](img/00-outline/stanford-laundry-2.png)
+[Source: Stanford](https://cs.stanford.edu/people/eroberts/courses/soco/projects/risc/pipelining/index.html)
+:::
+
+::: {.column width="50%"}
+- Consider an imaginary laundry
+    - Laundry steps: wash, dry, ironing
+    - One machine/operatore per step
+- Naive / sequential execution is slow
+- We can speedup the process with pipeline parallism
+    - The bottleneck / dominating step is **drying**
+    - Also: pipeline startup/shutdown
+:::
+
+::::
+
+
+## Task Parallism (1)
+
+:::: {.columns}
+
+::: {.column width="50%"}
+![](img/00-outline/task-parallelism.svg){width="100%"}
+:::
+
+::: {.column width="50%"}
+- Often, work can be split into different tasks
+    - e.g., one task per input file
+- These tasks can be processed independently
+- Tasks may have different "sizes" (time for processing, required RAM, ...)
+- Tasks may have dependencies (output of one task is input for another)
+- If we can easily split (part of) the work into independent tasks:
+    - **embarassingly parallel**
+:::
+
+::::
+
+
+## Task Parallism (2)
+
+:::: {.columns}
+
+::: {.column width="50%"}
+![](img/00-outline/manager-worker.svg){width="100%"}
+:::
+
+::: {.column width="50%"}
+- How to process these tasks?
+- Commonly, the manager-worker pattern is applied.
+- The manager
+    - has a (potentially dynamic) list of tasks
+    - distributes the tasks to the workers
+    - the workers do the actual work
+:::
+
+::::
+
+## Data Parallism
+
+:::: {.columns}
+
+::: {.column width="50%"}
+![](img/00-outline/wikipedia-matrix-multiplication.svg){width=100%}
+
+- specialized hardware examples: GPUs & TPUs
+:::
+
+::: {.column width="50%"}
+- **Regularly structured data** (e.g., vectors, matrices, tensors) ...
+    - ... have **natural decompositions** ...
+    - ... and operations can be easily parallelized.
+- Common applications:
+    - Linear algebra / graphics processing
+    - "Deep" learning etc.
+    - Finite element methods for differential equations
+        - (but with a twist!)
+:::
+
+::::
 
 ## HPC Systems and Architecture  {.inverse background-color="#70ADC1"}
 
@@ -404,7 +604,7 @@ __"Same-same (as your laptop), but different."__
 **Best Practices / Do's & Don'ts**
 
 - **DON'T** be afraid of large files
-    - 100GB does not qualify as large
+    - 1GB does not qualify as large
     - 1TB files ... do
 
 ## Job Scheduler and Resource Management

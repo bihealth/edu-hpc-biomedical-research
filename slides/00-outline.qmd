@@ -214,18 +214,31 @@ IBM Blue Gene ~2000-2015 [Wikipedia](https://en.wikipedia.org/wiki/History_of_su
 
 ## There Is No Magic (2)
 
+:::: {.columns}
+
+::: {.column width="50%"}
+
 - From the perspective of 1976, your smartphone is a supercomputer.
 - iPhone 14
     - ~1,000EUR
     - 6 cores @3.23Ghz; 6GB RAM
     - GPU: 5-core GPU
     - "Neural Engine": 15.8TOPs
+
+:::
+
+::: {.column width="50%"}
+
 - 2002 NEC Earth Simulator
     - 412,000,000EUR (2023; inflation corrected)
     - 36TFLOPs
 - 1976 Cray-1
     - 24,623,570EUR (2023; inflation corrected)
     - 160MFLOPS
+
+:::
+
+::::
 
 ## There Is No Magic (3)
 
@@ -235,10 +248,6 @@ IBM Blue Gene ~2000-2015 [Wikipedia](https://en.wikipedia.org/wiki/History_of_su
     - "yes and no"
 
 ## "Es gibt keinen Königsweg" (1)
-
-> aka. "There is no silver bullet".
-
-Steps to mastery:
 
 ::: {.incremental}
 
@@ -254,10 +263,6 @@ Steps to mastery:
 
 ## "Es gibt keinen Königsweg" (2)
 
-> aka. "There is no silver bullet".
-
-Steps to mastery:
-
 - Master using Linux.
 - Master programming for
     - a single core
@@ -268,10 +273,6 @@ Steps to mastery:
     - are embarassingly parallel
 
 ## "Es gibt keinen Königsweg" (3)
-
-> aka. "There is no silver bullet".
-
-Steps to mastery:
 
 - Master using Linux.
 - Master programming for
@@ -285,7 +286,7 @@ Steps to mastery:
 
 ## Types of Parallelism
 
-**Single-core level** (no focus here)
+**Single-core level** (not in focus here)
 
 - Bit-level parallelism
     - aka bit-wise AND, OR, etc.
@@ -313,7 +314,7 @@ Steps to mastery:
     - Laundry steps: wash, dry, ironing
     - One machine/operatore per step
 - Naive / sequential execution is slow
-- We can speedup the process with pipeline parallism
+- We can speedup the process with pipeline Parallelism
     - The bottleneck / dominating step is **drying**
     - Also: pipeline startup/shutdown
 :::
@@ -321,7 +322,7 @@ Steps to mastery:
 ::::
 
 
-## Task Parallism (1)
+## Task Parallelism (1)
 
 :::: {.columns}
 
@@ -331,10 +332,9 @@ Steps to mastery:
 
 ::: {.column width="50%"}
 - Often, work can be split into different tasks
-    - e.g., one task per input file
 - These tasks can be processed independently
-- Tasks may have different "sizes" (time for processing, required RAM, ...)
-- Tasks may have dependencies (output of one task is input for another)
+- Tasks may have different "sizes" (required RAM, ...)
+- Tasks may have dependencies
 - If we can easily split (part of) the work into independent tasks:
     - **embarassingly parallel**
 :::
@@ -342,12 +342,12 @@ Steps to mastery:
 ::::
 
 
-## Task Parallism (2)
+## Task Parallelism (2)
 
 :::: {.columns}
 
 ::: {.column width="50%"}
-![](img/00-outline/manager-worker.svg){width="100%"}
+![](img/00-outline/manager-worker.svg){width="80%"}
 :::
 
 ::: {.column width="50%"}
@@ -356,27 +356,28 @@ Steps to mastery:
 - The manager
     - has a (potentially dynamic) list of tasks
     - distributes the tasks to the workers
-    - the workers do the actual work
+- The workers
+    - do the actual work
 :::
 
 ::::
 
-## Data Parallism
+## Data Parallelism {.even-smaller}
 
 :::: {.columns}
 
-::: {.column width="50%"}
-![](img/00-outline/wikipedia-matrix-multiplication.svg){width=100%}
+::: {.column width="40%"}
+![](img/00-outline/wikipedia-matrix-multiplication.svg){width=80%}
 
 - specialized hardware examples: GPUs & TPUs
 :::
 
-::: {.column width="50%"}
+::: {.column width="60%"}
 - **Regularly structured data** (e.g., vectors, matrices, tensors) ...
-    - ... have **natural decompositions** ...
+    - ... **have obvious decompositions** ...
     - ... and operations can be easily parallelized.
 - Common applications:
-    - Linear algebra / graphics processing
+    - Linear algebra / graphics
     - "Deep" learning etc.
     - Finite element methods for differential equations
         - (but with a twist!)
@@ -664,13 +665,17 @@ How this applies to this session:
 - We will review your current settings (one on one)
 - Let's discuss productivity:
     - places (online) to find documentation / get answers
-    - "sleight of hand" ♥️♠️♣️♦️
+    - "sleight of hand" ♣️♠️♥️♦️
     - text editors
     - Bash features: shortcuts, history, ...
 
 ## Lab Tasks
 
 Please spend the rest of the day setting up or learning about ...
+
+:::: {.columns}
+
+::: {.column width="50%"}
 
 - `tmux` (or `screen`)
   - e.g., read [this tutorial](https://www.hamvocke.com/blog/a-quick-and-easy-guide-to-tmux/)
@@ -679,8 +684,17 @@ Please spend the rest of the day setting up or learning about ...
   - [Getting Started with GitHub](https://docs.github.com/en/get-started/quickstart/hello-world)
 - `nano`
   - [tutorial](https://www.howtogeek.com/42980/the-beginners-guide-to-nano-the-linux-command-line-text-editor/)
+
+:::
+
+::: {.column width="50%"}
+
 - `vim`
   - [tutorial](https://www.openvim.com/)
 - BIH HPC Resources
   - [hpc-talk](https://hpc-talk.cubi.bihealth.org/)
   - [hpc-docs](https://hpc-docs.cubi.bihealth.org/)
+
+:::
+
+::::

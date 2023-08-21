@@ -214,18 +214,31 @@ IBM Blue Gene ~2000-2015 [Wikipedia](https://en.wikipedia.org/wiki/History_of_su
 
 ## There Is No Magic (2)
 
+:::: {.columns}
+
+::: {.column width="50%"}
+
 - From the perspective of 1976, your smartphone is a supercomputer.
 - iPhone 14
     - ~1,000EUR
     - 6 cores @3.23Ghz; 6GB RAM
     - GPU: 5-core GPU
     - "Neural Engine": 15.8TOPs
+
+:::
+
+::: {.column width="50%"}
+
 - 2002 NEC Earth Simulator
     - 412,000,000EUR (2023; inflation corrected)
     - 36TFLOPs
 - 1976 Cray-1
     - 24,623,570EUR (2023; inflation corrected)
     - 160MFLOPS
+
+:::
+
+::::
 
 ## There Is No Magic (3)
 
@@ -285,7 +298,7 @@ Steps to mastery:
 
 ## Types of Parallelism
 
-**Single-core level** (no focus here)
+**Single-core level** (not in focus here)
 
 - Bit-level parallelism
     - aka bit-wise AND, OR, etc.
@@ -313,7 +326,7 @@ Steps to mastery:
     - Laundry steps: wash, dry, ironing
     - One machine/operatore per step
 - Naive / sequential execution is slow
-- We can speedup the process with pipeline parallism
+- We can speedup the process with pipeline Parallelism
     - The bottleneck / dominating step is **drying**
     - Also: pipeline startup/shutdown
 :::
@@ -321,7 +334,7 @@ Steps to mastery:
 ::::
 
 
-## Task Parallism (1)
+## Task Parallelism (1)
 
 :::: {.columns}
 
@@ -342,7 +355,7 @@ Steps to mastery:
 ::::
 
 
-## Task Parallism (2)
+## Task Parallelism (2)
 
 :::: {.columns}
 
@@ -356,12 +369,13 @@ Steps to mastery:
 - The manager
     - has a (potentially dynamic) list of tasks
     - distributes the tasks to the workers
-    - the workers do the actual work
+- The workers
+    - do the actual work
 :::
 
 ::::
 
-## Data Parallism
+## Data Parallelism
 
 :::: {.columns}
 

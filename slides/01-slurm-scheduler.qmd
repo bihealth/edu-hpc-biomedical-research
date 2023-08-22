@@ -574,7 +574,7 @@ alias sqmel='sqme "$@" | less -S'
 
 In Bash scripts, `set -x` and `set -v` are heaven-sent.
 
-- `set -x` prints commands before execution 
+- `set -x` prints commands before execution
 - (`set -v` prints commands as they are read)
 
 ## Logging Pitfalls
@@ -923,13 +923,13 @@ Build it:
 $ apptainer build /tmp/cowsay.sif docker://grycap/cowsay
 # INFO:    Starting build...
 Getting image source signatures
-Copying blob d6e911d60d73 skipped: already exists  
-Copying blob 55010f332b04 skipped: already exists  
-Copying blob b6f892c0043b skipped: already exists  
-Copying blob 3deef3fcbd30 skipped: already exists  
-Copying blob cf9722e506aa skipped: already exists  
-Copying blob 2955fb827c94 skipped: already exists  
-Copying config c1634cdfc2 done  
+Copying blob d6e911d60d73 skipped: already exists 
+Copying blob 55010f332b04 skipped: already exists 
+Copying blob b6f892c0043b skipped: already exists 
+Copying blob 3deef3fcbd30 skipped: already exists 
+Copying blob cf9722e506aa skipped: already exists 
+Copying blob 2955fb827c94 skipped: already exists 
+Copying config c1634cdfc2 done 
 Writing manifest to image destination
 <<<many warnings>>>
 INFO:    Creating SIF file...
@@ -939,7 +939,7 @@ INFO:    Build complete: /tmp/cowsay.sif
 Run it:
 
 ```
-$ apptainer run /tmp/cowsay.sif 
+$ apptainer run /tmp/cowsay.sif
  ______________________________________
 / Lazlo's Chinese Relativity Axiom:    \
 |                                      |

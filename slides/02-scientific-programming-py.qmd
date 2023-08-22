@@ -393,16 +393,69 @@ Output
 
 ## Conversion Between Polars and Pandas (1)
 
-- why
-- install dependencies
+:::: {.columns}
+
+::: {.column width="50%"}
+
+**But - why?!**
+
+- Polars is a new library
+- Pandas is the de-facto standard
+- Certain third-party libraries may not work with Pandas yet
+    - e.g., `scikit-learn`
+    - e.g., `rpy2`
+
+:::
+
+::: {.column width="50%"}
+
+**Installing dependencies**
+
+```
+mamba create -y -n polars-example \
+    polars pandas pyarrow
+```
+
+:::
+
+::::
 
 ## Conversion Between Polars and Pandas (2)
 
-- example code & explanation
+**Polars to Pandas**
+
+```python
+In [1]: import polars as pl
+   ...: import pandas as pd
+   ...: 
+   ...: pl_data = pl.DataFrame({"name": ["alice", "bob"], "age": [23, 52]})
+   ...: pd_data = pl_data.to_pandas()
+   ...: 
+
+In [2]: type(pl_data)
+Out[2]: polars.dataframe.frame.DataFrame
+
+In [3]: type(pd_data)
+Out[3]: pandas.core.frame.DataFrame
+```
 
 ## Conversion Between Polars and Pandas (3)
 
-- example code & explanation
+**Pandas to Polars**
+
+```python
+In [1]: import polars as pl
+   ...: import pandas as pd
+   ...: 
+   ...: pd_data = pd.DataFrame({"name": ["alice", "bob"], "age": [23, 52]})
+   ...: pl_data = pl.from_pandas(pd_data)
+
+In [2]: type(pd_data)
+Out[2]: pandas.core.frame.DataFrame
+
+In [3]: type(pl_data)
+Out[3]: polars.dataframe.frame.DataFrame
+```
 
 ## Numerical Computation with SciPy/NumPy {.inverse background-color="#70ADC1"}
 
@@ -445,25 +498,174 @@ Output
 
 👉 Mostly low level characteristics, many other libraries build on top.
 
-## Input and Output
+## Input and Output (1)
 
-- numpy array files
-- compression
-- more than one array
+Saving single array to `.npy` format
+
+```python
+import numpy as np
+
+mat = np.mat("1 2; 3 4")
+np.save("mat.npy", mat)
+```
+
+Saving multiple arrays to `.npz` format (ZIP of `.npy`)
+
+```python
+import numpy as np
+
+arr = np.array([1, 2, 3, 4])
+mat = np.mat("1 2; 3 4")
+np.savez("data.npz", arr=arr, mat=mat)
+```
+
+## Input and Output (2)
+
+Loading single array to `.npy` format
+
+```python
+In [1]: import numpy as np
+   ...: 
+   ...: mat = np.load("mat.npy")
+   ...: mat
+Out[1]: 
+array([[1, 2],
+       [3, 4]])
+```
+
+Loading multiple arrays from `.npz`:
+
+```python
+In [1]: import numpy as np
+   ...: 
+   ...: data = np.load("data.npz")
+   ...: 
+
+In [2]: data.keys()
+Out[2]: KeysView(NpzFile 'data.npz' with keys: arr, mat)
+
+In [3]: data["arr"]
+Out[3]: array([1, 2, 3, 4])
+
+In [4]: data["mat"]
+Out[4]: 
+array([[1, 2],
+       [3, 4]])
+```
 
 ## Arrays and Shapes
 
-- vectors
-- matrices
-- data types
+- arrays are the fundamental data structure
+- the `shape` attribute determines the dimension
+
+```python
+In [1]: import numpy as np
+
+In [2]: arr = np.array([1, 2, 3, 4])
+
+In [3]: arr
+Out[3]: array([1, 2, 3, 4])
+
+In [4]: arr.shape
+Out[4]: (4,)
+
+In [5]: arr.shape = (2, 2)
+
+In [6]: arr
+Out[6]: 
+array([[1, 2],
+       [3, 4]])
+```
 
 ## Vectorized Operations (1)
 
-Example
+- vectorized operations are the key to fast numerical computations
+- they are implemented in C and Fortran
+
+```python
+In [1]: import numpy as np
+   ...: 
+   ...: a = np.array([1,2,3,4])
+   ...: b = np.array([5,6,7,8])
+   ...: 
+
+In [2]: np.add(a, b)
+Out[2]: array([ 6,  8, 10, 12])
+
+In [3]: np.multiply(a, b)
+Out[3]: array([ 5, 12, 21, 32])
+```
 
 ## Vectorized Operations (2)
 
-Benchmark vs. Python List
+**Plain Python**
+
+```python
+In [1]: import timeit
+   ...: 
+   ...: a = range(100_000_000)
+   ...: b = range(100_000_000)
+   ...: 
+   ...: timeit.timeit("[x + y for x, y in zip(a, b)]", globals=globals(), number=1)
+   ...: 
+Out[1]: 8.240364263998345
+```
+
+**With numpy**
+
+```python
+In [1]: import numpy as np
+   ...: import timeit
+   ...: 
+   ...: npa = np.arange(100_000_000)
+   ...: npb = np.arange(100_000_000)
+   ...: 
+   ...: timeit.timeit("np.add(npa, npb)", globals=globals(), number=1)
+   ...: 
+Out[1]: 0.16427204399951734
+```
+
+## SciPy Example
+
+```python
+In [1]: import numpy as np
+   ...: from scipy import linalg
+   ...: 
+   ...: A = np.array([[1,3,5],[2,5,1],[2,3,8]])
+   ...: A
+Out[1]: 
+array([[1, 3, 5],
+       [2, 5, 1],
+       [2, 3, 8]])
+
+In [2]: linalg.inv(A)
+Out[2]: 
+array([[-1.48,  0.36,  0.88],
+       [ 0.56,  0.08, -0.36],
+       [ 0.16, -0.12,  0.04]])
+
+In [3]: A.dot(linalg.inv(A)) #double check
+Out[3]: 
+array([[ 1.00000000e+00, -1.11022302e-16,  4.85722573e-17],
+       [ 3.05311332e-16,  1.00000000e+00,  7.63278329e-17],
+       [ 2.22044605e-16, -1.11022302e-16,  1.00000000e+00]])
+```
+
+- For more information [see documentation](https://docs.scipy.org/doc/scipy/tutorial/index.html#user-guide)
+
+## Summary / Exercise
+
+**Summary**
+
+- NumPy provides fast numerical data structures and operations
+- SciPy provides scientifc functions / algorithms
+- By handing the operations to this C/Fortran code, the code will run faster than native Python code
+
+**Potential Exercises**
+
+- Implement your own vectorized function ([How-To](https://numpy.org/doc/stable/reference/generated/numpy.vectorize.html))
+- Try out the random number generator
+- Use the statistics functions such as `average`, `quantile`, etc.
 
 ## Interfacing with R for Statistics {.inverse background-color="#70ADC1"}
 

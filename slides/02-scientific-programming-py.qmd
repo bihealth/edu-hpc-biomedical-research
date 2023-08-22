@@ -59,50 +59,117 @@ __Considered Applications__
 
 ## Introduction
 
-- What is it
-- Is it useful?
+:::: {.columns}
+
+::: {.column width="50%"}
+
+- Jupyter Notebooks are a web-based interactive computing environment
+    - Jupyter Lab is the next generation
+- You edit **cells** with python code which is executed in a **kernel**
+- It's best explained by example ;-)
+
+:::
+
+::: {.column width="50%"}
+
+![](img/02-scientific-programming-py/wikipedia-jupyter-notebook.png)
+
+:::
+
+::::
 
 ## Installation
 
-```bash
+- Jupyter is installed as a Python module.
+- To install it locally with conda
 
-```
+  ```bash
+  mamba create -y -n jupyter-example jupyterlab
+  conda activate jupyter-example
+  jupyter lab # OR: jupyter notebook
+  # OUTPUT:
+  ...
+  http://127.0.0.1:8888/?token=a5eea49bec7cd70538c21e947e2de596a3ab66b39506ee72
+  ...
+  ```
 
-## Using Jupyter Notebook
+- [More Kernels](https://github.com/jupyter/jupyter/wiki/Jupyter-kernels) available
+    - Bash
+    - R
+    - Julia
+    - ...
 
-:::: {.columns}
-
-::: {.column width="50%"}
-
-some points
-
-:::
-
-::: {.column width="50%"}
-
-screenshot
-
-:::
-
-::::
-
-## Using Jupyter Labs
+## Using Jupyter (1)
 
 :::: {.columns}
 
 ::: {.column width="50%"}
 
-some points
+- There is no magic!
+- Packages can be installed in the conda environment (or via pip)
+    - `mamba install -y plotly_express`
+- The kernel keeps the current state
+    - To ensure that you have a clean state
+    - restart kernel and rerun all cells
+- Bonus: `ipython` is a turbo-charged interpreter on the command line
+- Useful: Markdown cells for documentation
 
 :::
 
 ::: {.column width="50%"}
 
-screenshot
+![](img/02-scientific-programming-py/jupyter-lab-plotly.png)
 
 :::
 
 ::::
+
+## Using Jupyter (2)
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+**Jupyter Lab vs. Notebook**
+
+- Originally: `ipython` notebook
+- Jupyter Notebook: single file
+- Jupyter Lab: IDE-like, terminal, ...
+
+:::
+
+::: {.column width="50%"}
+
+**Remarks**
+
+- `.ipynb` files are JSON files
+- They contain all code but also all output and log output (stderr)
+- To clear all output: `jupyter nbconvert --clear-output --to notebook --output=OUTPUT INPUT.ipynb`
+
+:::
+
+::::
+
+## Using Jupyter (3)
+
+**Advantages**
+
+- Really nice to try out things interactively
+- Excellent for interactive data analysis / visualization
+
+**Drawbacks**
+
+- Code cannot be reused (use Python modules for this)
+- Version control with Git feasible but not ideal
+
+## Using Jupyter on the HPC
+
+- Super easy to get started locally!
+- Also easy to launch a job on the HPC, but ...
+    - how to connect to its web interface?
+- Options:
+    - SSH tunneling
+    - Open OnDemand Portal ([hpc-portal.cubi.bihealth.org](https://hpc-portal.cubi.bihealth.org))
 
 ## Data Wrangling with Polars {.inverse background-color="#70ADC1"}
 

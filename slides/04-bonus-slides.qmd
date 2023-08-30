@@ -1,0 +1,250 @@
+---
+title: "Introduction to HPC"
+subtitle: "Bonus slides"
+
+author:
+  - name: Manuel Holtgrewe
+    orcid: 0000-0002-3051-1763
+    affiliations:
+      - ref: bihealth
+affiliations:
+  - id: bihealth
+    name: Berlin Institute of Health at Charité
+    address: Charitéplatz 1,
+    postal-code: 10117
+    city: Berlin
+    country: Germany
+title-slide-attributes:
+  data-background-size: contain
+  data-background-image: themes/bih/bih_bg_logo.png
+format:
+  revealjs:
+    theme:
+      - default
+      - themes/bih/theme.scss
+    slide-number: true
+    navigation-mode: linear
+    controls-layout: bottom-right
+    controls-tutorial: false
+    smaller: true
+    self-contained: true
+    # Override default "normal" size to get 16:9 aspect ratio.
+    width: 1200
+    height: 675
+    margin: 0.05
+    # Enable local plugins.
+    revealjs-plugins:
+      - plugins/fullscreen
+---
+
+## Session Overview
+
+__Contents__
+
+- Slurm Array Jobs
+- Python Multiprocessing Example
+- GNU Parallel
+
+## Slurm Array Jobs {.inverse background-color="#70ADC1"}
+
+- Introduction
+- Example
+- Tricks
+
+## Introduction
+
+- Slurm array jobs allow you to run
+    - **the same job script** (with the same name)
+    - **each job gets a numeric job number**
+    - **job numbers in ranges or lists**
+- Advantages:
+    - single `sbatch` call
+    - only one "pending" entry, lower load on scheduler
+
+## Example
+
+`arr_job.sh`
+
+```bash
+#!/usr/bin/bash
+
+#SBATCH --array=1-100
+#SBATCH --name=Hello-World
+
+echo Hello I am job $SLURM_ARRAY_TASK_ID out of $SLURM_ARRAY_TASK_COUNT
+```
+
+Run like this:
+
+```
+sbatch arr_job.sh
+# also possible:
+# - sbatch --array=1-100 anotherjob.sh
+# - sbatch --array=23,42,8,15 anotherjob.sh
+```
+
+## Tricks
+
+First, get a list of all files to process:
+
+```
+find /path -type f -name '*.bam' | sort > files.txt
+```
+
+Now, the job script:
+
+```bash
+#!/usr/bin/bash
+
+n=$SLURM_ARRAY_TASK_ID
+file_path=$(awk "(NR == $n)" files.txt)
+
+md5sum $file_path >$file_path.md5
+```
+
+Now, submit as:
+
+```
+wc -l files.txt
+# OUTPUT: number of lines in files.txt
+sbatch --array=1-$(wc -l files.txt) job_script.sh
+# will run, e.g., 'sbatch --array=1-234' job_script.sh
+```
+
+## Python Multiprocessing {.inverse background-color="#70ADC1"}
+
+- Introduction
+- Reminder: map/apply
+- Example
+- Caveats
+
+## Introduction
+
+- Python has a `threading` library with low-level primitives
+- But why is there a `multiprocessing`? Processes?
+    - Python has a global interpreter lock (GIL)
+    - (maybe removed at some point but it is there)
+    - Access to Python data structures is serialized
+    - Multithreading: only while threads are blocked (I/O)
+- Multiprocessing to the rescue:
+    - **Copy data** to another process
+    - This process can do the work
+
+## Reminder: apply/map
+
+- Remember functional programming?
+- `map(func, list) -> list`
+    - Apply `func` to each element on the `list` to obtain a new list of same size
+    - Can be parallelized if there are no side effects
+- `apply(func, list)`
+    - Apply `func` to each element on the `list`, ignoring results
+    - Can be parallelized if there are no side effects
+
+## Thread Pools
+
+- Thread pools are abstractions for parallelism
+- We create a pool with `N` threads
+- We let the thread pool process collections / lists of work
+    - `multiprocessing.Pool()` (process pool ;-))
+
+## Example
+
+```python
+import multiprocessing
+
+def func(element):
+    # ...
+
+if __name__ == "__main__":
+  work = list(range(1_000_000))
+
+  with multiprocessing.Pool(processes=4) as p:
+    # force single element chunks
+    done_work = p.map(func, work, chunksize=1)
+
+  print(done_work)
+```
+
+## Caveats
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+- Remember the "copy data to processes"?
+- The `func` must be serializeable (top-level function!)
+- The arguments must be serializeable (int, str, list, dict)
+- If you need to pass parameter etc, it might be better to make this part of the work
+
+:::
+
+::: {.column width=50%}
+
+
+```python
+def func(element, a, b):
+  # ...
+
+def func2(element_params):
+  element, params = element_params
+  func(element, **params)
+
+# ...
+
+params = {
+  "a": 1,
+  "b": 2,
+}
+
+real_work = list(range(1_000_000))
+work_with_params = [(x, params) for x in real_work]
+done_work = p.map(func, work, chunksize=1)
+```
+
+:::
+
+::::
+
+## GNU Parallel {.inverse background-color="#70ADC1"}
+
+- Introduction
+- Example
+
+## Introduction
+
+- GNU `parallel` is a command line tool that allows you to
+    - run a potentially large list of tasks
+    - with a fixed number of parallel tasks at the same time
+- It is similar to the earlier Python `multiprocessing.ThreadPool`
+- [Excellent Tutorial](https://www.gnu.org/software/parallel/parallel_tutorial.html)
+
+## Example
+
+:::: {.columns}
+
+::: {.column width=50%}
+
+```bash
+THREADS=4
+
+parallel -t -j $THREADS \
+  'md5sum {} >{}.md5' ::: *.bam
+
+parallel -t -j $THREADS \
+  'cd {//}; md5sum {/} >{/}.md5' ::: *.bam
+```
+
+:::
+
+::: {.column width=50%}
+
+__Placeholders__
+
+- `{}` - whole argument
+- `{/}` - basename (filename) of argument
+- `{//}` - dirname of argument
+- see `man parallel` for more
+
+:::
+
+::::

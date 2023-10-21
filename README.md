@@ -3,4 +3,4 @@
 # edu-hpc-intro
 HPC Introduction Course
 
-- [HTML Slides](https://holtgrewe.github.io/edu-hpc-biomedical-research)
+- [HTML Slides](https://bihealth.github.io/edu-hpc-biomedical-research)
